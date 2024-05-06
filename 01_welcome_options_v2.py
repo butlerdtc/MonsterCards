@@ -41,7 +41,8 @@ def main():
     elif choice == "Show cards":
         easygui.msgbox(choice, choice)
     else:
-        # If user selects 'Exit' this stops the program
+        easygui.msgbox("Thanks for using this program", "Goodbye")
+        # If selected this stops the program
         exit()
 
 
