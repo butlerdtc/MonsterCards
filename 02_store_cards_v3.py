@@ -1,5 +1,5 @@
-"""V2 of system to store the cards
-Updates V1 to iterate through both trials and output all cards and details.
+"""V3 of system to store the cards
+Updates V1 to edit card details to simulate user editing card.
 Created by Robson Butler - 08/05/24
 """
 
@@ -16,16 +16,6 @@ catalogue_list = [
     ["Froststep", 14, 14, 17, 4],
     ["Wispghoul", 17, 19, 3, 2]
 ]
-
-# Trialling print output for trial 1 (list)
-print("Trial 1:\n")
-for card in catalogue_list:
-    print(f"{card[0]}:")
-    print(f"Strength: {card[1]}")
-    print(f"Speed: {card[2]}")
-    print(f"Stealth: {card[3]}")
-    print(f"Cunning: {card[4]}")
-    print()
 
 # Trial 2, a dictionary to store the original cards
 catalogue_dict = {"Stoneling": {"Strength": 7, "Speed": 1, "Stealth": 25,
@@ -50,10 +40,39 @@ catalogue_dict = {"Stoneling": {"Strength": 7, "Speed": 1, "Stealth": 25,
                                 "Cunning": 2}
                   }
 
-# Trialling print output for trial 2 (dictionary)
-print("Trial 2:\n")
-for card, details in catalogue_dict.items():
-    print(f"{card}:")
-    for value in details:
-        print(f"{value}: {details[value]}")
-    print()
+# Temporary details to act as user input
+temp_name = "Vexscream"
+temp_stat = "Speed"
+temp_speed = 20
+
+# Trialling for editing details for trial 1 (list)
+print("Trial 1:")
+found = False
+for card in catalogue_list:
+    if card[0] == temp_name:
+        found = True
+        original_speed_1 = card[2]
+        print(f"Inputted name: {temp_name}\n{temp_stat} stat: Original = "
+              f"{original_speed_1}, New = {temp_speed}")
+        print(f"{card[0]}, Strength: {card[1]}, Speed: {card[2]}, Stealth:"
+              f" {card[3]}, Cunning: {card[4]}")
+        card[2] = temp_speed
+        print(f"{card[0]}, Strength: {card[1]}, Speed: {card[2]}, Stealth:"
+              f" {card[3]}, Cunning: {card[4]}")
+        print()
+        break
+
+if not found:
+    print("Not found")
+
+# Trialling for editing details for trial 2 (dictionary)
+print("Trial 2:")
+if temp_name in catalogue_dict:
+    original_speed_2 = catalogue_dict[temp_name][temp_stat]
+    print(f"Inputted name: {temp_name}\n{temp_stat} stat: Original = "
+          f"{original_speed_2}, New = {temp_speed}")
+    print(catalogue_dict[temp_name])
+    catalogue_dict[temp_name][temp_stat] = temp_speed
+    print(catalogue_dict[temp_name])
+else:
+    print("Not found")
