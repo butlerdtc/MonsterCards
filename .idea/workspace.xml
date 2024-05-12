@@ -27,6 +27,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Python.00_monster_base_v1.executor": "Run",
     "Python.01_welcome_options_v1.executor": "Run",
     "Python.01_welcome_options_v2.executor": "Run",
     "Python.01_welcome_options_v3.executor": "Run",
