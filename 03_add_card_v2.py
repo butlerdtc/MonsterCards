@@ -45,7 +45,7 @@ while True:
         temporary_dict[new_card_name] = {}
         break
 
-# Iterates through each stat from the list to get new value
+# Iterates through each stat from the list to get new values
 for stat in stats:
     temporary_dict[new_card_name][stat] = int(input(f"Enter {new_card_name}'s "
                                                     f"{stat} value: "))
