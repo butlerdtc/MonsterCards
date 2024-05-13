@@ -47,7 +47,7 @@ def main():
 
 
 # Main routine
-# Renamed from catalogue_dict because to show I chose this trial over the other
+# Renamed from catalogue_dict to show I chose this trial over the other
 card_catalogue = {"Stoneling": {"Strength": 7, "Speed": 1, "Stealth": 25,
                                 "Cunning": 15},
                   "Vexscream": {"Strength": 1, "Speed": 6, "Stealth": 21,
