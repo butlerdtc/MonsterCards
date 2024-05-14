@@ -1,2 +1,5 @@
 # Test file
-print("Monster Card Game")
+import easygui
+
+answer = easygui.enterbox("Monster Card Game")
+print(answer)

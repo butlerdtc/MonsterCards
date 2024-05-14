@@ -1,5 +1,5 @@
 """V3 of add card component
-Converts V2 to use easygui boxes instead of print statements and now uses if
+Changes V2 to use easygui boxes instead of print statements and now uses if
 statements to check if user selects cancel (returns None) and won't crash if
 they do, also changes the stat entering code to be inside the same loop. Checks
 if the entered stat value is within the 0 - 25 range.
