@@ -8,7 +8,7 @@ import easygui
 
 
 # Function to check if user cancels the component then returns suitable output
-def value_checker(dictionary, number_pairs):
+def dict_none_checker(dictionary, number_pairs):
     # Check if the dictionary is empty if so return none
     if not dictionary:
         return None
@@ -31,7 +31,7 @@ def value_checker(dictionary, number_pairs):
 
 # Function to allow user to add a new card
 def add_card(catalogue, values):
-    number = len(values)
+    number_stats = len(values)
     while True:
         # Dictionary to store entered data until its confirmed and added
         temporary_dict = {}
@@ -57,21 +57,23 @@ def add_card(catalogue, values):
                     while True:
                         stat_value = easygui.integerbox(f"Enter {new_name}'s "
                                                         f"{stat} value",
-                                                        f"{stat} value")
+                                                        f"{stat} value",
+                                                        upperbound=10000000,
+                                                        lowerbound=-10000000)
                         # If user selects cancel component ends
                         if stat_value is None:
                             cancel_marker = True
                             break
 
                         # If input within correct range adds value to stat(key)
-                        if 0 <= stat_value <= 25:
+                        if 1 <= stat_value <= 25:
                             temporary_dict[new_name][stat] = stat_value
                             break
                         # If cancel not selected and input not valid prints
                         # error
                         else:
-                            easygui.msgbox("Please enter a value between 0 "
-                                           "and 25", "Error")
+                            easygui.msgbox("Please enter a value between 1"
+                                           " and 25", "Error")
         # Breaks loop if user cancels (same for all break's below)
                     if cancel_marker:
                         break
@@ -82,8 +84,8 @@ def add_card(catalogue, values):
         else:
             break
     # Runs value checker to ensure all stats have values and weren't cancelled
-    output = value_checker(temporary_dict, number)
-    return output
+    checked_dictionary = dict_none_checker(temporary_dict, number_stats)
+    return checked_dictionary
 
 
 # Main routine
@@ -117,4 +119,4 @@ result = add_card(card_catalogue, stats)
 if result is not None:
     print(result)
 else:
-    print("None")
+    print("None - found")
