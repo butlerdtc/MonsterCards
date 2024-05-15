@@ -60,10 +60,21 @@ def add_card(catalogue, values):
                                                         f"{stat} value",
                                                         upperbound=10000000,
                                                         lowerbound=-10000000)
-                        # If user selects cancel component ends
+                        # If user selects cancel runs confirmation check
                         if stat_value is None:
-                            cancel_marker = True
-                            break
+                            # This asks to confirm cancelling the card
+                            confirm_stat = easygui.buttonbox("Are you sure"
+                                                             " you want to "
+                                                             "cancel adding a "
+                                                             "card",
+                                                             "Confirm "
+                                                             "cancellation",
+                                                             ["Yes", "No"])
+                            if confirm_stat == "No":
+                                continue
+                            else:
+                                cancel_marker = True
+                                break
 
                         # If input within correct range adds value to stat(key)
                         if 1 <= stat_value <= 25:
@@ -82,7 +93,16 @@ def add_card(catalogue, values):
 
                 break
         else:
-            break
+            # This asks to confirm cancelling the card
+            confirm_name = easygui.buttonbox("Are you sure you want to "
+                                             "cancel adding a card",
+                                             "Confirm cancellation",
+                                             ["Yes", "No"])
+            if confirm_name == "No":
+                continue
+            else:
+                break
+
     # Runs value checker to ensure all stats have values and weren't cancelled
     checked_dictionary = dict_none_checker(temporary_dict, number_stats)
     return checked_dictionary
