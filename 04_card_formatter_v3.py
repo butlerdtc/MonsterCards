@@ -1,40 +1,59 @@
 """V3 of card formatter
-Converts V1 to a function to and now returns a formatted string, so it can be
-used in an easygui box instead of just print statements.
-Created by Robson Butler - 16/05/24
+This is an instance of trialling a different way to format the cards.
+Converts V1 to a function to and now returns a formatted string. This trial
+adds outlines and creates a table of the cards but still results in the same
+data but presented in a different way.
+Created by Robson Butler - 17/05/24
 """
 
 
-def card_formatter(cards):
+# Function to format dictionaries into a table style design
+def card_formatter(cards, header):
+    # Table outline
     outline = "+------------------------+-----------------+"
     outline_length = len(outline)
-    title = "Card Catalogue"
+    # Uses any name that the user enters as the title
+    title = header
     title_length = len(title)
+    # Calculates the number of decorations needed based on length values
     decor_number = (outline_length - title_length) // 2
+    # Uses '*' as the decoration and subtracts 1 to leave space between title
     clean_title = "*" * (decor_number - 1)
+    # These set and add the title and table names to the heading boxes
     formatted_output = f"\n{clean_title} {title} {clean_title}\n"
     formatted_output += f"{outline}\n"
     formatted_output += "|          Card          |    Stat Value   |\n"
     formatted_output += f"{outline}\n"
+    # Iterates through each card in dictionary
     for card, items in cards.items():
         length_card = len(card)
         total_space = 24
+        # Calculates the number of spaces needed on each side of name
         spaces_number = (total_space - length_card) // 2
-        new_spaces = " " * (spaces_number - 2)
+        # Subtracts 3 to leave space on either side of card for decor and space
+        new_spaces = " " * (spaces_number - 3)
+        # Calculates if any extra spaces are needed if card name was odd number
         remaining = (total_space - length_card) % 2
-        formatted_output += (f"|{new_spaces}* {card} *{new_spaces + ' ' * 
-                             remaining}|    * Stats *    |\n")
+        # Adds name, spacing, decor, header to the string
+        formatted_output += (f"|{new_spaces}** {card} **{new_spaces + ' ' * 
+                             remaining}|   ** Stats **   |\n")
+        # Iterates through each stat in that card
         for item, stat in items.items():
-            after_space = 16 - len(item)
+            # A constant to act as base for number of spaces needed
+            total_after_space = 16
+            after_space = total_after_space - len(item)
+            # Converts integer to a string so length can be calculated
             stat_string = f"{stat}"
             length_stat = len(stat_string)
+            # If stat length is 2 only 7 spaces are needed after or if 1 only 8
             if length_stat == 2:
-                stat_space_number = 7
+                stat_after_space = 7
             else:
-                stat_space_number = 8
+                stat_after_space = 8
             formatted_output += (f"|     -  {item}{' ' * after_space}|"
-                                 f"{' ' * 8}{stat}{' ' * stat_space_number}|"
+                                 f"{' ' * 8}{stat}{' ' * stat_after_space}|"
                                  f"\n")
+        # Adds outline to bottom of card
         formatted_output += f"{outline}\n"
 
     return formatted_output
@@ -64,5 +83,5 @@ card_catalogue = {"Stoneling": {"Strength": 7, "Speed": 1, "Stealth": 25,
                   }
 
 # Tests function works
-formatted_catalogue = card_formatter(card_catalogue)
+formatted_catalogue = card_formatter(card_catalogue, "Card Catalogue")
 print(formatted_catalogue)

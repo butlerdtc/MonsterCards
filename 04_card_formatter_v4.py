@@ -1,28 +1,30 @@
-"""V2 of card formatter
-Converts V1 to a function and now returns a formatted string, so it can be used
-in an easygui box instead of just print statements. This formats the card so
-its printed as a list with bullet points for each stat.
-Created by Robson Butler - 16/05/24
+"""V4 of card formatter
+Adds a none checker to V2 and changes name to reflect its design style.
+Created by Robson Butler - 18/05/24
 """
 import easygui
 
 
 # Function to format dictionaries into a list style design
-def card_formatter(cards):
-    # Temporary list to store each formatted dictionary item
-    temporary_list = []
-    # Iterates through each card in catalogue
-    for card, items in cards.items():
-        temporary_list.append(f"{card}:")
-        # Sorts through each stat and value for each card
-        for item, stat in items.items():
-            temporary_list.append(f" - " + f"{item}: {stat}")
-        # New line between each card
-        temporary_list.append("")
+def card_formatter_list(cards):
+    # If dictionary is none from other components returns none or else formats
+    if cards is None:
+        return None
+    else:
+        # Temporary list to store each formatted dictionary item
+        temporary_list = []
+        # Iterates through each card in catalogue
+        for card, items in cards.items():
+            temporary_list.append(f"{card}:")
+            # Sorts through each stat and value for each card
+            for item, stat in items.items():
+                temporary_list.append(f" - " + f"{item}: {stat}")
+            # New line between each card
+            temporary_list.append("")
 
-    # Removes unnecessary features from each value such as '(' or '['
-    list_output = "\n".join(temporary_list)
-    return list_output
+        # Removes unnecessary features from each value such as '(' or '['
+        list_output = "\n".join(temporary_list)
+        return list_output
 
 
 # Main routine
@@ -48,5 +50,5 @@ card_catalogue = {"Stoneling": {"Strength": 7, "Speed": 1, "Stealth": 25,
                                 "Cunning": 2}
                   }
 # Tests function works
-formatted_catalogue = card_formatter(card_catalogue)
+formatted_catalogue = card_formatter_list(card_catalogue)
 easygui.msgbox(formatted_catalogue, "Card catalogue")
