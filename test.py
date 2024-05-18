@@ -1,5 +1,5 @@
 # Test file
 import easygui
 
-answer = easygui.enterbox("Monster Card Game")
+answer = easygui.choicebox("Monster Card Game", "", ["Yes", "Mo"])
 print(answer)
