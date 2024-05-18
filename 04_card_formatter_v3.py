@@ -1,4 +1,4 @@
-"""V2 of card formatter
+"""V3 of card formatter
 Converts V1 to a function to and now returns a formatted string, so it can be
 used in an easygui box instead of just print statements.
 Created by Robson Butler - 16/05/24

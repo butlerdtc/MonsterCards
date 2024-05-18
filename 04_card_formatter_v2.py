@@ -1,6 +1,7 @@
 """V2 of card formatter
-Converts V1 to a function to and now returns a formatted string, so it can be
-used in an easygui box instead of just print statements.
+Converts V1 to a function and now returns a formatted string, so it can be used
+in an easygui box instead of just print statements. This formats the card so
+its printed as a list with bullet points for each stat.
 Created by Robson Butler - 16/05/24
 """
 import easygui
