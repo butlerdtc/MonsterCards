@@ -1,7 +1,8 @@
-"""V3 of card formatter
+"""V5 of card formatter
 Adds a none checker to V3 and changed name to reflect its design style.
 Created by Robson Butler - 18/05/24
 """
+import easygui
 
 
 # Function to format dictionaries into a table style design
@@ -86,4 +87,5 @@ card_catalogue = {"Stoneling": {"Strength": 7, "Speed": 1, "Stealth": 25,
 # Tests function works
 formatted_catalogue = card_formatter_table(card_catalogue,
                                            "Card Catalogue")
+easygui.msgbox(formatted_catalogue)
 print(formatted_catalogue)

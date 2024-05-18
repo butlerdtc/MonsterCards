@@ -52,3 +52,4 @@ card_catalogue = {"Stoneling": {"Strength": 7, "Speed": 1, "Stealth": 25,
 # Tests function works
 formatted_catalogue = card_formatter_list(card_catalogue)
 easygui.msgbox(formatted_catalogue, "Card catalogue")
+print(formatted_catalogue)
