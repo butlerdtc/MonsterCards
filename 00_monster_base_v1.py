@@ -1,4 +1,4 @@
-"""Monster cards  base component v1
+"""Monster cards  base component V1
 Each component gets added after creation and testing.
 Functions from components 1 and 2.
 Created by Robson Butler - 12/05/24
