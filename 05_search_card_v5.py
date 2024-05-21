@@ -1,7 +1,6 @@
-"""V3 of search for a card
-Converts V2 to a function and uses the formatter from 04_card_formatter_v4.
-This trial uses an enter box to let the user type in the card name.
-Created by Robson Butler - 20/05/24
+"""V5 of search for a card
+Changes V4 to use a choice box instead of an enter box. This is another trial.
+Created by Robson Butler - 21/05/24
 """
 import easygui
 
@@ -35,24 +34,21 @@ def search_card(catalogue, title):
     else:
         # Loops until a card has been found
         while True:
-            # Asks user to enter name of card
-            search = easygui.enterbox("Please enter the name of the card",
-                                      title)
-            # If user cancels it returns None
+            # Sets an empty list and appends each card name
+            card_list = []
+            for card in catalogue:
+                card_list.append(card)
+            # Uses list of card names as choices so the user can select one
+            search = easygui.choicebox("Please choose a card",
+                                       title, card_list)
             if search is None:
                 return None
-            # Capitalizes user input
-            formatted_search = search.title()
-            # Checks if card searched is in the catalogue
-            if formatted_search in card_catalogue:
-                found_card = catalogue[formatted_search]
+            # Checks if card searched is in catalogue
+            if search:
+                found_card = catalogue[search]
                 # Assigns the card name as key to the stat values the card has
-                all_card_details = {formatted_search: found_card}
+                all_card_details = {search: found_card}
                 return all_card_details
-            else:
-                easygui.msgbox("That card was not found in the catalogue\n\n"
-                               "Please enter a card in the catalogue",
-                               "Card not found")
 
 
 # Main routine
@@ -77,6 +73,7 @@ card_catalogue = {"Stoneling": {"Strength": 7, "Speed": 1, "Stealth": 25,
                   "Wispghoul": {"Strength": 17, "Speed": 19, "Stealth": 3,
                                 "Cunning": 2}
                   }
+
 # Tests function works
 card_found = search_card(card_catalogue, "Search catalogue")
 if card_found is not None:

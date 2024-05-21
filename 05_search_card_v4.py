@@ -1,6 +1,6 @@
 """V4 of search for a card
 Converts V2 to a function. This trial uses a buttonbox instead of an enter box.
-Created by Robson Butler - **/05/24
+Created by Robson Butler - 20/05/24
 """
 import easygui
 
