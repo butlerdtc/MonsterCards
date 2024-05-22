@@ -29,26 +29,26 @@ def card_formatter_list(cards):
 
 # Function to search catalogue for a card
 def search_card(catalogue, title):
-    if catalogue is None:
-        return None
-    else:
-        # Loops until a card has been found
-        while True:
-            # Sets an empty list and appends each card name
-            card_list = []
-            for card in catalogue:
-                card_list.append(card)
-            # Uses list of card names as choices so the user can select one
-            search = easygui.choicebox("Please choose a card",
-                                       title, card_list)
-            if search is None:
-                return None
-            # Checks if card searched is in catalogue
-            if search:
-                found_card = catalogue[search]
-                # Assigns the card name as key to the stat values the card has
-                all_card_details = {search: found_card}
-                return all_card_details
+    # Loops until a card has been found
+    while True:
+        # This keeps track if this function is used (Affects edit component)
+        search_used = False
+        # Sets an empty list and appends each card name
+        card_list = []
+        for card in catalogue:
+            card_list.append(card)
+        # Uses list of card names as choices so the user can select one
+        search = easygui.choicebox("Please choose a card",
+                                   title, card_list)
+        if search is None:
+            return None, search_used
+        # Checks if card searched is in catalogue
+        if search:
+            found_card = catalogue[search]
+            # Assigns the card name as key to the stat values the card has
+            all_card_details = {search: found_card}
+            search_used = True
+            return all_card_details, search_used
 
 
 # Main routine

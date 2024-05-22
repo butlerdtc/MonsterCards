@@ -33,6 +33,8 @@ def dict_none_checker(dictionary, number_pairs):
 def add_card(catalogue, values):
     number_stats = len(values)
     while True:
+        # This keeps track if this function is used (Affects edit component)
+        added_used = False
         # Dictionary to store entered data until its confirmed and added
         temporary_dict = {}
         # Marks if user cancels the program
@@ -105,7 +107,10 @@ def add_card(catalogue, values):
 
     # Runs value checker to ensure all stats have values and weren't cancelled
     checked_dictionary = dict_none_checker(temporary_dict, number_stats)
-    return checked_dictionary
+    # If none is not returned it sets added_used to True to mark this was used
+    if checked_dictionary is not None:
+        added_used = True
+    return checked_dictionary, added_used
 
 
 # Main routine

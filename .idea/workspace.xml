@@ -29,6 +29,7 @@
   "keyToString": {
     "Python.00_monster_base_v1.executor": "Run",
     "Python.00_monster_base_v2.executor": "Run",
+    "Python.00_monster_base_v3.executor": "Run",
     "Python.01_welcome_options_v1.executor": "Run",
     "Python.01_welcome_options_v2.executor": "Run",
     "Python.01_welcome_options_v3.executor": "Run",
@@ -50,6 +51,7 @@
     "Python.05_search_card_v4.executor": "Run",
     "Python.05_search_card_v5.executor": "Run",
     "Python.06_edit_cards_v1.executor": "Run",
+    "Python.06_edit_cards_v2.executor": "Run",
     "Python.test.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "last_opened_file_path": "C:/Users/Robson School/OneDrive - Middleton Grange School/YR12/12DTC/2.7 and 2.8 Programming/MonsterCards",

@@ -1,10 +1,9 @@
-"""V1 of edit card component
-Basic edit program that has limited functionality but allows user to edit card
-name or stat value in the catalogue.
-Created by Robson Butler - 21/05/24
+"""V2 of edit card component
+Converts all print and input statements to Easygui boxes.
+Created by Robson Butler - 22/05/24
 """
+import easygui
 
-# Catalogue from 00_monster_base_v2
 card_catalogue = {"Stoneling": {"Strength": 7, "Speed": 1, "Stealth": 25,
                                 "Cunning": 15},
                   "Vexscream": {"Strength": 1, "Speed": 6, "Stealth": 21,
@@ -26,20 +25,22 @@ card_catalogue = {"Stoneling": {"Strength": 7, "Speed": 1, "Stealth": 25,
                   "Wispghoul": {"Strength": 17, "Speed": 19, "Stealth": 3,
                                 "Cunning": 2}
                   }
-# Loops until user enters a valid choice
+
+# Loops until user cancels or confirms the card
 while True:
-    edit_options = (input("Would you like to 'confirm' card, 'edit' or 'cancel"
-                          "'? ").title())
+    edit_options = easygui.buttonbox("What would you like to do?",
+                                     "Options",
+                                     ["Edit", "Confirm", "Cancel"])
     if edit_options == "Cancel":
         # Will cancel adding/updating the card
-        print("Cancelled")
+        easygui.msgbox("Card has not been updated/added")
         break
     elif edit_options == "Confirm":
         # Will add/update the card to the catalogue
-        print("Confirmed")
+        easygui.msgbox("Card has been added/updated")
         break
-    elif edit_options == "Edit":
-        # If edit is entered loops until user edits card or cancels
+    else:
+        # If edit is chosen loops until user edits card or cancels
         while True:
             chosen_card = (input("Please choose card from catalogue to edit"
                                  "(or cancel): ").title())
@@ -50,13 +51,10 @@ while True:
             if chosen_card in card_catalogue:
                 edit_name = input("Would you like to edit the card name?(Y/N)"
                                   "").lower()
-                # If they don't want to edit the card name
                 if edit_name == "n":
-                    # User enters what stat they want to edit
                     searched_stat = input("What stat would you like to change?"
                                           "").title()
                     for name, stats in card_catalogue:
-                        # If stat is correct updates old value with new value
                         if searched_stat in stats:
                             new_value = int(input(f"Enter new value for "
                                                   f"{searched_stat}: "))
@@ -65,13 +63,8 @@ while True:
                             break
                         else:
                             print("Please enter valid stat")
-                # If they want to edit card name it asks for input then
-                # updates the old name
                 elif edit_name == "y":
                     new_name = input("Enter new card name: ")
                     card_catalogue[new_name] = card_catalogue.pop(chosen_card)
                     break
-    else:
-        print("Please choose valid option")
-# Prints the catalogue
 print(card_catalogue)
