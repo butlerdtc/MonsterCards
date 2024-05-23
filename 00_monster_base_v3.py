@@ -79,7 +79,7 @@ def add_card(catalogue, values):
     number_stats = len(values)
     while True:
         # This keeps track if this function is used (Affects edit component)
-        added_used = False
+        added_used = 0
         # Dictionary to store entered data until its confirmed and added
         temporary_dict = {}
         # Marks if user cancels the program
@@ -152,9 +152,11 @@ def add_card(catalogue, values):
 
     # Runs value checker to ensure all stats have values and weren't cancelled
     checked_dictionary = dict_none_checker(temporary_dict, number_stats)
-    # If none is not returned it sets added_used to True to mark this was used
+    # If none is not returned it sets added_used to 1 to mark it's been used
     if checked_dictionary is not None:
-        added_used = True
+        # Sets it to 1 rather than false so edit function can identify which
+        # component was used
+        added_used = 1
     return checked_dictionary, added_used
 
 
@@ -241,14 +243,14 @@ def search_card(catalogue, title):
     # Loops until a card has been found
     while True:
         # This keeps track if this function is used (Affects edit component)
-        search_used = False
+        search_used = 0
         # Sets an empty list and appends each card name
         card_list = []
         for card in catalogue:
             card_list.append(card)
         # Uses list of card names as choices so the user can select one
-        search = easygui.choicebox("Please choose a card", title,
-                                   card_list)
+        search = easygui.choicebox("Please choose a card",
+                                   title, card_list)
         if search is None:
             return None, search_used
         # Checks if card searched is in catalogue
@@ -256,7 +258,9 @@ def search_card(catalogue, title):
             found_card = catalogue[search]
             # Assigns the card name as key to the stat values the card has
             all_card_details = {search: found_card}
-            search_used = True
+            # Sets it to 2 rather than false so edit function can identify
+            # which component was used
+            search_used = 2
             return all_card_details, search_used
 
 

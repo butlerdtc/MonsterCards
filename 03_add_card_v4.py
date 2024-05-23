@@ -34,7 +34,7 @@ def add_card(catalogue, values):
     number_stats = len(values)
     while True:
         # This keeps track if this function is used (Affects edit component)
-        added_used = False
+        added_used = 0
         # Dictionary to store entered data until its confirmed and added
         temporary_dict = {}
         # Marks if user cancels the program
@@ -107,9 +107,11 @@ def add_card(catalogue, values):
 
     # Runs value checker to ensure all stats have values and weren't cancelled
     checked_dictionary = dict_none_checker(temporary_dict, number_stats)
-    # If none is not returned it sets added_used to True to mark this was used
+    # If none is not returned it sets added_used to 1 to mark it's been used
     if checked_dictionary is not None:
-        added_used = True
+        # Sets it to 1 rather than false so edit function can identify which
+        # component was used
+        added_used = 1
     return checked_dictionary, added_used
 
 
