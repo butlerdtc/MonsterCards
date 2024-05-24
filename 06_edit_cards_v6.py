@@ -56,10 +56,12 @@ def search_card(catalogue, title):
 
 # This function runs the menu that lets user edit or not
 def editing_menu(card_dict, formatted_card_dict, marker, stat_list):
+    # Sets original card none as None so if card_dict is None it returns None
+    original_card_none = None
     # This checks which component has been used based on the marker or if None
     if marker == 0 or card_dict is None:
         # If None is returned, 0 will have been as well so this returns None
-        return None
+        return None, original_card_none
     elif marker == 1:
         # If marker is 1, the add function has been run so the statements are
         # 'added' instead of 'updated'
@@ -68,6 +70,8 @@ def editing_menu(card_dict, formatted_card_dict, marker, stat_list):
         # If marker is 2, the search function has been run so the statements
         # are replaced with 'updated' instead of 'added'
         edited_statements = "updated"
+    # This keeps track of the original card name for use in update function
+    original_card_name = list(card_dict.keys())[0]
     # Loops until user cancels or confirms the card
     while True:
         # Asks user if they want to edit, confirm or cancel
@@ -79,13 +83,13 @@ def editing_menu(card_dict, formatted_card_dict, marker, stat_list):
         if edit_options == "Cancel":
             easygui.msgbox(f"Card has not been {edited_statements}",
                            f"{edited_statements.title()} card")
-            return None
+            return None, original_card_name
         # Returns the edited card dictionary if they confirm
         elif edit_options == "Confirm":
             # Will add/update the card to the catalogue
             easygui.msgbox(f"Card has been {edited_statements}",
                            f"{edited_statements.title()} card")
-            return card_dict
+            return card_dict, original_card_name
         # If edit they run the function to actually edit the card
         else:
             card_dict, new_formatted_card = edit_card_details(card_dict,
@@ -185,8 +189,23 @@ def edit_card_details(card_information, stats_list):
             return card_information, formatted_details
 
 
+# Function uses the card dictionary from edit menu and updates the catalogue
+def update_catalogue(original_name, edited_card, catalogue):
+    if edited_card is not None:
+        if original_name in edited_card:
+            # Update with new name (even if no other stats were edited)
+            new_name = edited_card.pop(original_name)
+            catalogue[new_name] = catalogue.pop(
+                original_name)  # Preserve existing stats
+            catalogue[new_name].update(edited_card)  # Apply any edited stats
+        else:
+            # Name change but no update provided in edited_card (original stats)
+            catalogue[original_name] = catalogue.pop(
+                original_name)  # Swap entries
+    return catalogue
+
+
 # Main routine
-# Uses the whole catalogue now
 card_catalogue = {"Stoneling": {"Strength": 7, "Speed": 1, "Stealth": 25,
                                 "Cunning": 15},
                   "Vexscream": {"Strength": 1, "Speed": 6, "Stealth": 21,
@@ -215,5 +234,7 @@ stats = ["Strength", "Speed", "Stealth", "Cunning"]
 # Tests functions work
 chosen_card, search_marked = search_card(card_catalogue, "Search card")
 formatted_card = card_formatter_list(chosen_card)
-result = editing_menu(chosen_card, formatted_card, search_marked, stats)
-print(result)
+result, old_name = editing_menu(chosen_card, formatted_card, search_marked,
+                                stats)
+card_catalogue = update_catalogue(old_name, result, card_catalogue)
+print(card_catalogue)
