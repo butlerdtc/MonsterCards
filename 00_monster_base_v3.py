@@ -32,7 +32,7 @@ def main(catalogue, stat_list):
         choice = easygui.buttonbox("What would you like to do?", "Options",
                                    ["Add card", "Search card", "Delete card",
                                     "Show cards", "Exit"])
-        # Added 'Add card' component, rest added eventually
+        # Added 'Add card' and 'Search card' components, rest added eventually
         if choice == "Add card":
             new_card_dict, added = add_card(catalogue, stat_list)
             formatted_new_card = card_formatter_list(new_card_dict)
