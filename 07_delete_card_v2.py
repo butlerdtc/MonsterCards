@@ -1,6 +1,8 @@
-"""V5 of search for a card
-Changes V4 to use a choice box instead of an enter box. This is another trial.
-Created by Robson Butler - 21/05/24
+"""V2 of delete card
+This converts V1 to use easygui instead of print statements and uses the search
+function from component 5 and the card formatter from component 4 to get user
+input then format it. Adds confirmation messages before deleting the card.
+Created by Robson Butler - 26/05/24
 """
 import easygui
 
@@ -76,10 +78,30 @@ card_catalogue = {"Stoneling": {"Strength": 7, "Speed": 1, "Stealth": 25,
                                 "Cunning": 2}
                   }
 
-# Tests function works
-card_found, marker = search_card(card_catalogue, "Search catalogue")
-if card_found is not None:
-    card_printed = card_formatter_list(card_found)
-    easygui.msgbox(card_printed, "Card")
-else:
-    print("None")
+# This uses the search function from 05_search_card_v5 to find card to delete
+delete, marker = search_card(card_catalogue, "Delete card")
+# If the user didn't cancel searching, run the delete code
+if delete is not None:
+    # This finds the card name for use
+    card_name = list(delete.keys())[0]
+    # Formats the cards details for use in messages
+    presented_details = card_formatter_list(delete)
+    # Asks user if they want to delete card or not
+    choice = easygui.buttonbox(f"This is the card you want to delete\n\n"
+                               f"{presented_details}", "Delete card",
+                               ["Yes", "No"])
+    # If they select yes ask for further confirmation
+    if choice == "Yes":
+        confirm = easygui.buttonbox(f"Confirm you want to delete '{card_name}'",
+                                    "Confirmation", ["Delete", "Cancel"])
+        # If they choose delete the card and details are removed
+        if confirm == "Delete":
+            card_catalogue.pop(card_name)
+        # If not deletion is cancelled
+        else:
+            easygui.msgbox(f"{card_name} was not deleted", "Deletion cancelled")
+    # If not deletion is cancelled
+    else:
+        easygui.msgbox(f"{card_name} was not deleted", "Deletion cancelled")
+# Prints the catalogue, changed or not
+print(card_catalogue)

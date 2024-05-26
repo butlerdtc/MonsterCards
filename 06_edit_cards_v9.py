@@ -47,6 +47,7 @@ def search_card(catalogue, title):
         # Checks if card searched is in catalogue
         if search:
             found_card = catalogue[search]
+            print(found_card)
             # Assigns the card name as key to the stat values the card has
             all_card_details = {search: found_card}
             # Sets it to 2 rather than false so edit function can identify
@@ -201,26 +202,25 @@ def edit_card_details(card_information, stats_list):
 
 # Function uses the card dictionary from edit menu and updates the catalogue
 def update_catalogue(original_name, edited_card, catalogue):
+    print("Original Name:", original_name)
+    print("Edited Card:", edited_card)
     if edited_card is None:
+        print("Edited card is None. Returning catalogue as is.")
         return catalogue
     else:
-        # Checks if the original name is in the catalogue
         if original_name in catalogue:
-            # Checks if the edited card's name wasn't changed
+            print("Original name found in catalogue.")
             if original_name in edited_card:
-                # Updates the stats of the card
+                print("Original name also found in edited card.")
                 catalogue[original_name].update(edited_card[original_name])
             else:
-                # If the cards name was edited this deletes the original cards
-                # information from the catalogue
+                print("Original name not found in edited card. Deleting original entry.")
                 del catalogue[original_name]
-            # Iterates through each item in edited card
             for name, values in edited_card.items():
-                # If the card name has been edited, it assigns the new name as the
-                # key with the cards stats
                 if name != original_name:
+                    print("Updating catalogue with edited card.")
                     catalogue[name] = values
-        # Returns the catalogue if changed or not
+        print("Returning updated catalogue.")
         return catalogue
 
 
@@ -252,8 +252,7 @@ stats = ["Strength", "Speed", "Stealth", "Cunning"]
 
 # Tests functions work
 chosen_card, search_marked = search_card(card_catalogue, "Search card")
-formatted_card = card_formatter_list(chosen_card)
-result, old_name = editing_menu(chosen_card, formatted_card, search_marked,
-                                stats)
-print("Result:", result)
-print("Old Name:", old_name)
+# formatted_card = card_formatter_list(chosen_card)
+# result, old_name = editing_menu(chosen_card, formatted_card, search_marked,
+#                                 stats)
+# card_catalogue = update_catalogue(old_name, result, card_catalogue)

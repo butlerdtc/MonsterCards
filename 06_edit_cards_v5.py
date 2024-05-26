@@ -1,6 +1,6 @@
 """V5 of edit card component
-This adds markers to output correct instructions and edits the menu to work
-for other components output but still doesn't confirm the edited card.
+This adds confirmation messages to V4 for each change in editing functions and
+uses the search function from 05_search_card_v5.
 Created by Robson Butler - 24/05/24
 """
 import easygui
