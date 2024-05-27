@@ -1,60 +1,34 @@
 # Test file
-# Function to format dictionaries into a table style design
-def card_formatter_table(cards, header):
-    # Returns none if dictionary is none from other components or runs program
-    if cards is None:
-        return None
-    else:
-        # Table outline
-        outline = "+------------------------+-----------------+"
-        outline_length = len(outline)
-        # Uses any name that the user enters as the title
-        title = header
-        title_length = len(title)
-        # Calculates the number of decorations needed based on length values
-        decor_number = (outline_length - title_length) // 2
-        # Uses '*' as the decoration and subtracts 1 for space between title
-        clean_title = "*" * (decor_number - 1)
-        # These set and add the title and table names to the heading boxes
-        formatted_output = f"\n{clean_title} {title} {clean_title}\n"
-        formatted_output += f"{outline}\n"
-        formatted_output += "|          Card          |    Stat Value   |\n"
-        formatted_output += f"{outline}\n"
-        # Iterates through each card in dictionary
-        for card, items in cards.items():
-            length_card = len(card)
-            total_space = 24
-            # Calculates the number of spaces needed on each side of name
-            spaces_number = (total_space - length_card) // 2
-            # Subtracts 3 to leave space on either side of card for decor
-            new_spaces = " " * (spaces_number - 3)
-            # Calculates if extra spaces are needed if card name was odd number
-            remaining = (total_space - length_card) % 2
-            # Adds name, spacing, decor, header to the string
-            formatted_output += (f"|{new_spaces}** {card} **{new_spaces + ' ' * 
-                                 remaining}|   ** Stats **   |\n")
-            # Iterates through each stat in that card
-            for item, stat in items.items():
-                # A constant to act as base for number of spaces needed
-                total_after_space = 16
-                after_space = total_after_space - len(item)
-                # Converts integer to a string so length can be calculated
-                stat_string = f"{stat}"
-                length_stat = len(stat_string)
-                # If stat length is 2, 7 spaces are needed after or if 1 only 8
-                if length_stat == 2:
-                    stat_after_space = 7
-                else:
-                    stat_after_space = 8
-                formatted_output += (f"|     -  {item}{' ' * after_space}|"
-                                     f"{' ' * 8}{stat}{' ' * stat_after_space}"
-                                     f"|\n")
-            # Adds outline to bottom of card
-            formatted_output += f"{outline}\n"
-
-        return formatted_output
+import easygui
 
 
+# Function to search catalogue for a card
+def search_card(catalogue, title):
+    # Loops until a card has been found
+    while True:
+        # This keeps track if this function is used (Affects edit component)
+        search_used = 0
+        # Sets an empty list and appends each card name
+        card_list = []
+        for card in catalogue:
+            card_list.append(card)
+        # Uses list of card names as choices so the user can select one
+        search = easygui.choicebox("Please choose a card",
+                                   title, card_list)
+        if search is None:
+            return None, search_used
+        # Checks if card searched is in catalogue
+        if search:
+            found_card = catalogue[search]
+            # Assigns the card name as key to the stat values the card has
+            all_card_details = {search: found_card}
+            # Sets it to 2 rather than false so edit function can identify
+            # which component was used
+            search_used = 2
+            return all_card_details, search_used
+
+
+# Main routine
 card_catalogue = {"Stoneling": {"Strength": 7, "Speed": 1, "Stealth": 25,
                                 "Cunning": 15},
                   "Vexscream": {"Strength": 1, "Speed": 6, "Stealth": 21,
@@ -77,8 +51,12 @@ card_catalogue = {"Stoneling": {"Strength": 7, "Speed": 1, "Stealth": 25,
                                 "Cunning": 2}
                   }
 
-sorted_card_catalogue = dict(sorted(card_catalogue.items()))
+# Tests function works
+card_found, marker = search_card(card_catalogue, "Search catalogue")
 
-formatted_catalogue = card_formatter_table(sorted_card_catalogue,
-                                           "Card Catalogue")
-print(formatted_catalogue)
+temp = []
+for card, stat in card_found.items():
+    temp.append(card)
+    for stats, values in stat.items():
+        temp.append(values)
+print(temp)

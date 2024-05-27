@@ -94,12 +94,11 @@ def editing_menu(card_dict, formatted_card_dict, marker, stat_list):
             return card_dict, original_card_name
         # If edit they run the function to actually edit the card
         else:
-            card_dict, new_formatted_card = edit_card_details(card_dict,
-                                                              stat_list)
-            if card_dict is None:  # Handle cancellation of editing
-                return None, original_card_none
+            new_card_dict, new_formatted_card = edit_card_details(card_dict,
+                                                                  stat_list)
             # Regenerates the formatted card with the updated changes
             formatted_card_dict = new_formatted_card
+            card_dict = new_card_dict
 
 
 # This function will edit the card then return the edited card
@@ -252,7 +251,7 @@ stats = ["Strength", "Speed", "Stealth", "Cunning"]
 
 # Tests functions work
 chosen_card, search_marked = search_card(card_catalogue, "Search card")
-# formatted_card = card_formatter_list(chosen_card)
-# result, old_name = editing_menu(chosen_card, formatted_card, search_marked,
-#                                 stats)
-# card_catalogue = update_catalogue(old_name, result, card_catalogue)
+formatted_card = card_formatter_list(chosen_card)
+result, old_name = editing_menu(chosen_card, formatted_card, search_marked,
+                                stats)
+card_catalogue = update_catalogue(old_name, result, card_catalogue)
