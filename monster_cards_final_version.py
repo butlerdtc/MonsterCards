@@ -131,7 +131,7 @@ def get_card_catalogue():
     }
 
 
-# Function to sort the catalogue by the first letter of the card names
+# Function to sort the catalogue by the first letter of the cards names
 def sort_card_catalogue(catalogue):
     # Sorts the dictionary by the first letters of each card using 'sorted'
     sorted_card_catalogue = dict(sorted(catalogue.items()))
@@ -160,7 +160,7 @@ def dict_none_checker(dictionary, number_pairs):
     return dictionary
 
 
-# Function to let user add a new card to the catalogue
+# Function to let the user add a new card to the catalogue
 def add_card(catalogue, values):
     # Finds how many values are in stats to store the number of key-value pairs
     number_stats = len(values)
@@ -340,7 +340,7 @@ def card_formatter_table(cards, header):
         return formatted_output
 
 
-# Function that searches the catalogue for a card and returns the result
+# Function that searches the catalogue for a card, then returns the result
 def search_card(catalogue, title):
     # Loops until a card has been found in catalogue
     while True:
@@ -427,7 +427,7 @@ def editing_menu(card_dict, formatted_card_dict, choice_marker, stat_list):
             formatted_card_dict = new_formatted_card
 
 
-# This function will allow user to edit the card then returns the edited card
+# This function will let the user edit the card, then returns the edited card
 def edit_card_details(card_information, stats_list):
     # Loops until user edits card or cancels
     while True:
@@ -586,7 +586,7 @@ def delete_card(searched_card, catalogue):
     return catalogue
 
 
-# Function to display cards that will be printed to the console
+# Function to display the cards that will be printed to the console
 def print_catalogue(full_catalogue):
     # List to keep track of all card names
     card_list = []
@@ -615,5 +615,5 @@ stats = ["Strength", "Speed", "Stealth", "Cunning"]
 # Gets the catalogue to be used by the main function
 card_catalogue = get_card_catalogue()
 
-# Runs the all the functions that make up the program
+# Runs all the functions that make up the program
 main(card_catalogue, stats)
