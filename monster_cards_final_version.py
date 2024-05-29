@@ -1,8 +1,8 @@
 """Monster cards final version
 Program provides user with different options to run a catalogue that stores
 the cards used in a monster card game.
-Based on 00_monster_base_v4. Added a check to the add card function to check if
-new name is less than 3 characters based on user feedback.
+Based on 00_monster_base_v4. Added a confirmation check to the add card
+function to check if new name is less than 3 characters based on user feedback.
 Created by Robson Butler - 29/05/24
 """
 import easygui
