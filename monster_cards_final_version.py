@@ -1,7 +1,8 @@
 """Monster cards final version
 Program provides user with different options to run a catalogue that stores
 the cards used in a monster card game.
-Based on 00_monster_base_v4
+Based on 00_monster_base_v4. Added a check to the add card function to check if
+new name is less than 3 characters based on user feedback.
 Created by Robson Butler - 29/05/24
 """
 import easygui
@@ -180,61 +181,78 @@ def add_card(catalogue, values):
                                          "card", "New name")
         # This checks if the user selected cancel or entered a name
         if new_card_name is not None:
-            # Capitalizes user input
-            new_name = new_card_name.title()
-            # Checks if card name is already in catalogue, if so prints error
-            if new_name in catalogue:
-                easygui.msgbox("This card is already in the catalogue\n"
-                               "Please enter a new name", "Error")
-                # Reruns the loop if user enters name already in catalogue
+            # Finds the length of the name the user entered
+            new_card_length = len(new_card_name)
+
+            if new_card_length <= 3:
+                easygui.msgbox("Card name cannot be less than 3 "
+                               "characters", "Error")
                 continue
             else:
-                # Adds new card name as key to temporary dictionary
-                temporary_dict[new_name] = {}
-                # Iterates through each stat from the list to get new values
-                for stat in values:
-                    while True:
-                        # User enters new value for each stat
-                        stat_value = easygui.integerbox(f"Enter "
-                                                        f"{new_name}'s {stat} "
-                                                        f"value",
-                                                        f"{stat} value",
-                                                        upperbound=10000000,
-                                                        lowerbound=-10000000)
-                        # If user selects cancel runs confirmation check
-                        if stat_value is None:
-                            # This asks user to confirm if they want to cancel
-                            confirm_stat = easygui.buttonbox("Are you "
-                                                             "sure you want to"
-                                                             " cancel adding a"
-                                                             " card",
-                                                             "Confirm "
-                                                             "cancellation",
-                                                             ["Yes",
-                                                              "No"])
-                            if confirm_stat == "No":
-                                continue
-                            else:
-                                # Sets marker to indicate user cancelled
-                                cancel_marker = True
-                                break
+                # Capitalizes user input
+                new_name = new_card_name.title()
+                # Checks if card name is already in catalogue, if so prints
+                # error
+                if new_name in catalogue:
+                    easygui.msgbox("This card is already in the catalogue\n"
+                                   "Please enter a new name", "Error")
+                    # Reruns the loop if user enters name already in catalogue
+                    continue
+                else:
+                    # Adds new card name as key to temporary dictionary
+                    temporary_dict[new_name] = {}
+                    # Iterates through each stat from list to get new values
+                    for stat in values:
+                        while True:
+                            # Variables for boundary limits so they fit in code
+                            up = 100000000
+                            low = -100000000
 
-                        # If input within correct range adds value to stat(key)
-                        if 1 <= stat_value <= 25:
-                            temporary_dict[new_name][stat] = stat_value
+                            # User enters new value for each stat
+                            stat_value = easygui.integerbox(f"Enter "
+                                                            f"{new_name}'s "
+                                                            f"{stat} value",
+                                                            f"{stat} value",
+                                                            upperbound=up,
+                                                            lowerbound=low)
+                            # If user selects cancel runs confirmation check
+                            if stat_value is None:
+                                # Variable to be the confirmation message
+                                c_message = ("Are you sure you want to"
+                                             "cancel adding a card?")
+                                # Variable for title to fit inside code
+                                confirm_title = "Confirm cancellation"
+
+                                # This asks user to confirm if they cancel
+                                confirm_stat = easygui.buttonbox(c_message,
+                                                                 confirm_title,
+                                                                 ["Ye"
+                                                                  "s", "No"])
+                                if confirm_stat == "No":
+                                    continue
+                                else:
+                                    # Sets marker to indicate user cancelled
+                                    cancel_marker = True
+                                    break
+
+                            # If input within correct range adds value to stat
+                            if 1 <= stat_value <= 25:
+                                temporary_dict[new_name][stat] = stat_value
+                                break
+                            # If cancel not selected and input not valid prints
+                            # error
+                            else:
+                                easygui.msgbox("Please enter a value "
+                                               "between 1 and 25",
+                                               "Error")
+                        # Breaks loop if user cancels (same for all break's
+                        # below)
+                        if cancel_marker:
                             break
-                        # If cancel not selected and input not valid prints
-                        # error
-                        else:
-                            easygui.msgbox("Please enter a value between "
-                                           "1 and 25", "Error")
-                    # Breaks loop if user cancels (same for all break's below)
                     if cancel_marker:
                         break
-                if cancel_marker:
-                    break
 
-                break
+                    break
         else:
             # This asks to confirm cancelling the card
             confirm_name = easygui.buttonbox("Are you sure you want to "
