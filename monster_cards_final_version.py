@@ -1,8 +1,10 @@
 """Monster cards final version
 Program provides user with different options to run a catalogue that stores
 the cards used in a monster card game.
-Based on 00_monster_base_v4. Added a confirmation check to the add card
-function to check if new name is less than 3 characters based on user feedback.
+Based on 00_monster_base_v4.
+Added a confirmation check to the add and edit functions to check if new name
+is less than 3 characters based on user feedback and added a confirmation to
+the show cards function. Made the instructions a function and an option.
 Created by Robson Butler - 29/05/24
 """
 import easygui
@@ -14,21 +16,12 @@ def main(catalogue, stat_list):
     easygui.msgbox("Welcome to the Monster card catalogue!",
                    "Welcome")
 
-    # Stores the instructions to be run later
-    instructions = ("This is a catalogue for monster cards. In the next "
-                    "screen you will have a few options.\n\n - You can add a "
-                    "new card to the catalogue\n - You can search for a card "
-                    "in the catalogue and then edit its details\n - You can "
-                    "delete a card from the catalogue\n - You can print all "
-                    "the cards in the catalogue\n - You can update existing "
-                    "card information in the catalogue\n\nHave fun exploring "
-                    "the catalogue and managing your monster cards!")
-
-    # Asks if user needs the instructions
     show_instructions = easygui.buttonbox("Would you like to see the "
                                           "instructions?",
                                           "View instructions?",
                                           ["Yes", "No"])
+    instructions = instructions_output()
+
     if show_instructions == "Yes":
         # Displays instructions if user chooses 'yes'
         easygui.msgbox(instructions, "Instructions")
@@ -39,7 +32,8 @@ def main(catalogue, stat_list):
         choice = easygui.buttonbox("What would you like to do?",
                                    "Options",
                                    ["Add card", "Search card",
-                                    "Delete card", "Show cards", "Exit"])
+                                    "Delete card", "Show cards",
+                                    "Instructions", "Exit"])
         if choice == "Add card":
             # This gets the new cards dictionary and 'added' stores if user
             # cancelled adding a new card or not
@@ -92,10 +86,15 @@ def main(catalogue, stat_list):
             catalogue = delete_card(searched_card_deletion, sorted_catalogue)
 
         elif choice == "Show cards":
-            # Calls the print catalogue function to return the string to print
+            # Calls the print catalogue function
             print_cards = print_catalogue(sorted_catalogue)
-            # Prints the formatted catalogue to the python console
-            print(print_cards)
+            if print_cards is not None:
+                # Prints the formatted catalogue to the python console
+                print(print_cards)
+
+        elif choice == "Instructions":
+            # Shows the instructions message if user chooses to
+            easygui.msgbox(instructions, "Instructions")
 
         else:
             # Prints goodbye and thank you message
@@ -130,6 +129,21 @@ def get_card_catalogue():
         "Wispghoul": {"Strength": 17, "Speed": 19, "Stealth": 3,
                       "Cunning": 2}
     }
+
+
+# Function to return the instructions
+def instructions_output():
+    # Stores the instructions to be run later
+    instruction_words = ("This is a catalogue for monster cards. In the next "
+                         "screen you will have a few options.\n\n - You can "
+                         "add a new card to the catalogue\n - You can search "
+                         "for a card in the catalogue and then edit its "
+                         "details\n - You can delete a card from the catalogue"
+                         "\n - You can print all the cards in the catalogue\n "
+                         "- You can update existing card information in the "
+                         "catalogue\n\nHave fun exploring the catalogue and "
+                         "managing your monster cards!")
+    return instruction_words
 
 
 # Function to sort the catalogue by the first letter of the cards names
@@ -507,30 +521,51 @@ def edit_card_details(card_information, stats_list):
 
         # Runs this if they choose to edit the card name
         elif chosen_change == "Name":
-            # Asks for new name
-            new_name = easygui.enterbox("Enter new card name",
-                                        "New name")
-            # Checks if user cancelled adding new name
-            if new_name is not None:
-                # Asks user to confirm updating name
-                confirm_new_name = easygui.buttonbox(f"Are you sure you "
-                                                     f"want '{new_name}' to "
-                                                     f"replace '{card_name}'",
-                                                     "Confirm new name",
-                                                     ["No", "Yes"])
-                # If user doesn't confirm the loop runs again
-                if confirm_new_name == "No":
-                    continue
-                else:
-                    # Updates the card dictionary to replace old name with new
-                    card_information[new_name] = card_information.pop(
-                        card_name)
+            # Loops until user cancels or enters valid new name
+            while True:
+                # Asks for new name
+                new_name = easygui.enterbox("Enter new card name",
+                                            "New name")
+                # Checks if user cancelled adding new name
+                if new_name is not None:
 
-                    return card_information, card_formatter_list(
-                        card_information)
-            # If user cancelled adding new name runs loop again
-            else:
-                continue
+                    # Finds the length of the new name
+                    new_name_length = len(new_name)
+
+                    # If the new name is less than 3 characters reruns loop
+                    if new_name_length < 3:
+                        easygui.msgbox("Card name cannot be less than 3 "
+                                       "characters\n\nPlease enter a new "
+                                       "name", "Error")
+                        continue
+                    else:
+                        # Capitalizes new name
+                        upper_name = new_name.title()
+
+                        # Asks user to confirm updating name
+                        confirm_new_name = easygui.buttonbox(f"Are you "
+                                                             f"sure you want "
+                                                             f"'{upper_name}' "
+                                                             f"to replace "
+                                                             f"'{card_name}'",
+                                                             "Confirm new"
+                                                             " name",
+                                                             ["No",
+                                                              "Yes"])
+                        # If user doesn't confirm the loop runs again
+                        if confirm_new_name == "No":
+                            break
+                        else:
+                            # Updates the card dictionary to replace old name
+                            card_information[upper_name] = (
+                                card_information.pop(card_name))
+
+                            return card_information, card_formatter_list(
+                                card_information)
+
+                # If user cancelled adding new name runs loop again
+                else:
+                    break
 
         # If they cancel returns the unedited card and unedited formatted card
         else:
@@ -606,25 +641,37 @@ def delete_card(searched_card, catalogue):
 
 # Function to display the cards that will be printed to the console
 def print_catalogue(full_catalogue):
-    # List to keep track of all card names
-    card_list = []
+    # Asks user if they want the cards to be printed
+    confirm_print = easygui.buttonbox("Would you like the cards to be "
+                                      "printed to the console?",
+                                      "Confirm print",
+                                      ["Yes", "No"])
 
-    # Adds all card names and '-' to the list
-    for card_name in full_catalogue:
-        card_list.append(f"     -   {card_name}")
-    all_names = "\n".join(card_list)
+    if confirm_print == "Yes":
+        # List to keep track of all card names
+        card_list = []
 
-    # Displays message of cards that will be printed
-    easygui.msgbox(f"These are the cards in the catalogue:\n\n{all_names}"
-                   f"\n\nAll cards have been printed to the console",
-                   "Catalogue printed")
+        # Adds all card names and '-' to the list
+        for card_name in full_catalogue:
+            card_list.append(f"     -   {card_name}")
+        all_names = "\n".join(card_list)
 
-    # Calls the formatter to get all the formatted catalogue
-    printed_catalogue = card_formatter_table(full_catalogue,
-                                             "Card Catalogue")
+        # Displays message of cards that will be printed
+        easygui.msgbox(f"These are the cards in the catalogue:\n\n{all_names}"
+                       f"\n\nAll cards have been printed to the console",
+                       "Catalogue printed")
 
-    # Returns the formatted catalogue
-    return printed_catalogue
+        # Calls the formatter to get all the formatted catalogue
+        printed_catalogue = card_formatter_table(full_catalogue,
+                                                 "Card Catalogue")
+
+        # Returns the formatted catalogue
+        return printed_catalogue
+    else:
+        easygui.msgbox("Cards will not be printed\n\nReturning to the "
+                       "options screen", "Not printed")
+        # Returns none if user chooses 'No'
+        return None
 
 
 # Main routine
