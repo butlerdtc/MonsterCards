@@ -3,8 +3,8 @@ Program provides user with different options to run a catalogue that stores
 the cards used in a monster card game.
 Based on 00_monster_base_v4.
 Added a confirmation check to the add and edit functions to check if new name
-is less than 3 characters based on user feedback and added a confirmation to
-the show cards function. Made the instructions a function and an option.
+is less than 3 characters based on user feedback. Made the instructions a
+function and an option.
 Created by Robson Butler - 29/05/24
 """
 import easygui
@@ -88,9 +88,9 @@ def main(catalogue, stat_list):
         elif choice == "Show cards":
             # Calls the print catalogue function
             print_cards = print_catalogue(sorted_catalogue)
-            if print_cards is not None:
-                # Prints the formatted catalogue to the python console
-                print(print_cards)
+
+            # Prints the formatted catalogue to the python console
+            print(print_cards)
 
         elif choice == "Instructions":
             # Shows the instructions message if user chooses to
@@ -641,37 +641,25 @@ def delete_card(searched_card, catalogue):
 
 # Function to display the cards that will be printed to the console
 def print_catalogue(full_catalogue):
-    # Asks user if they want the cards to be printed
-    confirm_print = easygui.buttonbox("Would you like the cards to be "
-                                      "printed to the console?",
-                                      "Confirm print",
-                                      ["Yes", "No"])
+    # List to keep track of all card names
+    card_list = []
 
-    if confirm_print == "Yes":
-        # List to keep track of all card names
-        card_list = []
+    # Adds all card names and '-' to the list
+    for card_name in full_catalogue:
+        card_list.append(f"     -   {card_name}")
+    all_names = "\n".join(card_list)
 
-        # Adds all card names and '-' to the list
-        for card_name in full_catalogue:
-            card_list.append(f"     -   {card_name}")
-        all_names = "\n".join(card_list)
+    # Displays message of cards that will be printed
+    easygui.msgbox(f"These are the cards in the catalogue:\n\n{all_names}"
+                   f"\n\nAll cards have been printed to the console",
+                   "Catalogue printed")
 
-        # Displays message of cards that will be printed
-        easygui.msgbox(f"These are the cards in the catalogue:\n\n{all_names}"
-                       f"\n\nAll cards have been printed to the console",
-                       "Catalogue printed")
+    # Calls the formatter to get all the formatted catalogue
+    printed_catalogue = card_formatter_table(full_catalogue,
+                                             "Card Catalogue")
 
-        # Calls the formatter to get all the formatted catalogue
-        printed_catalogue = card_formatter_table(full_catalogue,
-                                                 "Card Catalogue")
-
-        # Returns the formatted catalogue
-        return printed_catalogue
-    else:
-        easygui.msgbox("Cards will not be printed\n\nReturning to the "
-                       "options screen", "Not printed")
-        # Returns none if user chooses 'No'
-        return None
+    # Returns the formatted catalogue
+    return printed_catalogue
 
 
 # Main routine
