@@ -1,112 +1,89 @@
-"""Monster cards final version
-Program provides user with different options to run a catalogue that stores
-the cards used in a monster card game.
-Based on 00_monster_base_v4.
-Added a confirmation check to the add and edit functions to check if new name
-is less than 3 characters based on user feedback. Made the instructions a
-function and an option.
-Created by Robson Butler - 29/05/24
+"""Monster cards  base component V5
+Each component gets added after creation and testing. Functions updated from
+component 6. Incorporated the updated edit component so it now functions
+properly.
+Created by Robson Butler - 02/06/24
 """
 import easygui
+import copy
 
 
-# Function to allow the user to choose what option they would like to execute
+# Function to user choose what option they would like to execute
 def main(catalogue, stat_list):
     # Welcome message
-    easygui.msgbox("Welcome to the Monster card catalogue!",
-                   "Welcome")
+    easygui.msgbox("Welcome to the Monster card catalogue!", "Welcome")
 
+    instructions = ("This is a catalogue for monster cards. In the next "
+                    "screen you will have a few options.\n\n - You can add a "
+                    "new card to the catalogue\n - You can search for a card "
+                    "in the catalogue and then edit its details\n - You can "
+                    "delete a card from the catalogue\n - You can print all "
+                    "the cards in the catalogue\n - You can update existing "
+                    "card information in the catalogue\n\nHave fun exploring "
+                    "the catalogue and managing your monster cards!")
+
+    # Asks if user needs the instructions
     show_instructions = easygui.buttonbox("Would you like to see the "
                                           "instructions?",
                                           "View instructions?",
                                           ["Yes", "No"])
-    instructions = instructions_output()
-
     if show_instructions == "Yes":
-        # Displays instructions if user chooses 'yes'
         easygui.msgbox(instructions, "Instructions")
     while True:
+        # A deep copy of the catalogue before user edits it
+        copied_catalogue = copy.deepcopy(catalogue)
+
         # This sorts the catalogue alphabetically
         sorted_catalogue = sort_card_catalogue(catalogue)
         # Asks user to choose an option
-        choice = easygui.buttonbox("What would you like to do?",
-                                   "Options",
-                                   ["Add card", "Search card",
-                                    "Delete card", "Show cards",
-                                    "Instructions", "Exit"])
+        choice = easygui.buttonbox("What would you like to do?", "Options",
+                                   ["Add card", "Search card", "Delete card",
+                                    "Show cards", "Exit"])
         if choice == "Add card":
-            # This gets the new cards dictionary and 'added' stores if user
-            # cancelled adding a new card or not
+            # This gets the new cards dictionary and added stores if it was
+            # cancelled
             new_card_dict, added = add_card(sorted_catalogue, stat_list)
-
-            # This formats the new card for use in displaying it when editing
+            # This formats the new card for use in displaying it
             formatted_new_card = card_formatter_list(new_card_dict)
 
-            # This gets the updated card dictionary, the original name and
-            # 'new_changes_confirmed' stores if the user cancelled or confirmed
-            # the changes
-            updated_new_card, original_added_name, new_changes_confirmed = (
-                editing_menu(new_card_dict, formatted_new_card, added,
-                             stat_list))
+            # This gets the result of the edit menu
+            result = (editing_menu(new_card_dict, formatted_new_card, added,
+                      stat_list, catalogue))
 
-            # This updates the catalogue if changes were confirmed or not
-            catalogue = update_catalogue(original_added_name, updated_new_card,
-                                         new_changes_confirmed)
+            if result is not None:
+                catalogue = result
+            else:
+                catalogue = copied_catalogue
 
         elif choice == "Search card":
-            # This gets the searched cards dictionary and 'searched' stores if
-            # the user cancelled searching or not
             searched_card_dict, searched = search_card(sorted_catalogue,
                                                        "Search catalogue")
-
-            # This formats the searched card, so it can be displayed later
             formatted_searched_card = card_formatter_list(searched_card_dict)
 
-            # This gets the updated card dictionary, the original name and
-            # 'searched_changes_confirmed' stores if the user cancelled or
-            # confirmed the changes
-            (updated_searched_card, original_searched_name,
-             searched_changes_confirmed) = (
-                editing_menu(searched_card_dict, formatted_searched_card,
-                             searched, stat_list))
+            result_ = (editing_menu(searched_card_dict, formatted_searched_card,
+                       searched, stat_list, catalogue))
 
-            # This updates the catalogue even if edits were made or not
-            catalogue = update_catalogue(original_searched_name,
-                                         updated_searched_card,
-                                         searched_changes_confirmed)
+            if result_ is not None:
+                catalogue = result_
+            else:
+                catalogue = copied_catalogue
 
         elif choice == "Delete card":
-            # This lets the user choose what card they want to delete
-            # The underscore is the marker but this variable is not needed in
-            # the delete function, so it's now an empty variable
             searched_card_deletion, _ = search_card(sorted_catalogue,
                                                     "Delete card")
-
-            # Calls the delete function and regenerates catalogue
+            # Calls delete function and regenerates catalogue
             catalogue = delete_card(searched_card_deletion, sorted_catalogue)
-
         elif choice == "Show cards":
-            # Calls the print catalogue function
             print_cards = print_catalogue(sorted_catalogue)
-
-            # Prints the formatted catalogue to the python console
             print(print_cards)
-
-        elif choice == "Instructions":
-            # Shows the instructions message if user chooses to
-            easygui.msgbox(instructions, "Instructions")
-
         else:
-            # Prints goodbye and thank you message
-            easygui.msgbox("Thanks for using this program",
-                           "Goodbye")
+            easygui.msgbox("Thanks for using this program", "Goodbye")
             # If selected this stops the program
             exit()
 
 
-# Function that returns the card catalogue; a function so copies can be made
+# Function to get the card catalogue, it's a function so copies can be made
 def get_card_catalogue():
-    # Returns the original ten cards in the catalogue as a dictionary
     return {
         "Stoneling": {"Strength": 7, "Speed": 1, "Stealth": 25,
                       "Cunning": 15},
@@ -131,37 +108,22 @@ def get_card_catalogue():
     }
 
 
-# Function to return the instructions
-def instructions_output():
-    # Stores the instructions to be run later
-    instruction_words = ("This is a catalogue for monster cards. In the next "
-                         "screen you will have a few options.\n\n - You can "
-                         "add a new card to the catalogue\n - You can search "
-                         "for a card in the catalogue and then edit its "
-                         "details\n - You can delete a card from the catalogue"
-                         "\n - You can print all the cards in the catalogue\n "
-                         "- You can update existing card information in the "
-                         "catalogue\n\nHave fun exploring the catalogue and "
-                         "managing your monster cards!")
-    return instruction_words
-
-
-# Function to sort the catalogue by the first letter of the cards names
+# Function to sort the catalogue by the first letter of the card names
 def sort_card_catalogue(catalogue):
     # Sorts the dictionary by the first letters of each card using 'sorted'
     sorted_card_catalogue = dict(sorted(catalogue.items()))
     return sorted_card_catalogue
 
 
-# Function to check if a dictionaries values or keys are empty or None
+# Function to check if dictionary or any stat in dictionary is empty
 def dict_none_checker(dictionary, number_pairs):
-    # Checks if the dictionary is empty, if it is return None
+    # Check if the dictionary is empty if so return none
     if not dictionary:
         return None
 
     # Iterates through each pair in the dictionary
     for key, value in dictionary.items():
-        # Checks if the key is not None and not empty, if it is returns None
+        # Checks if the key is not None and not empty, if it is returns none
         if key is None or not key:
             return None
 
@@ -175,98 +137,71 @@ def dict_none_checker(dictionary, number_pairs):
     return dictionary
 
 
-# Function to let the user add a new card to the catalogue
+# Function to allow user to add a new card
 def add_card(catalogue, values):
-    # Finds how many values are in stats to store the number of key-value pairs
     number_stats = len(values)
-
     while True:
         # This keeps track if this function is used (Affects edit component)
         added_used = 0
-
         # Dictionary to store entered data until its confirmed and added
         temporary_dict = {}
-
         # Marks if user cancels the program
         cancel_marker = False
-
         # Asks for new card name
-        new_card_name = easygui.enterbox("Please enter name of the new "
-                                         "card", "New name")
+        new_card_name = easygui.enterbox("Please enter name of the new card",
+                                         "New name")
         # This checks if the user selected cancel or entered a name
         if new_card_name is not None:
-            # Finds the length of the name the user entered
-            new_card_length = len(new_card_name)
-
-            if new_card_length <= 3:
-                easygui.msgbox("Card name cannot be less than 3 "
-                               "characters", "Error")
+            # Converts user input to have a capital letter
+            new_name = new_card_name.title()
+            # Checks if card name is already in the catalogue then prints error
+            if new_name in catalogue:
+                easygui.msgbox("This card is already in the catalogue\nPlease"
+                               " enter a new name", "Error")
                 continue
             else:
-                # Capitalizes user input
-                new_name = new_card_name.title()
-                # Checks if card name is already in catalogue, if so prints
-                # error
-                if new_name in catalogue:
-                    easygui.msgbox("This card is already in the catalogue\n"
-                                   "Please enter a new name", "Error")
-                    # Reruns the loop if user enters name already in catalogue
-                    continue
-                else:
-                    # Adds new card name as key to temporary dictionary
-                    temporary_dict[new_name] = {}
-                    # Iterates through each stat from list to get new values
-                    for stat in values:
-                        while True:
-                            # Variables for boundary limits so they fit in code
-                            up = 100000000
-                            low = -100000000
-
-                            # User enters new value for each stat
-                            stat_value = easygui.integerbox(f"Enter "
-                                                            f"{new_name}'s "
-                                                            f"{stat} value",
-                                                            f"{stat} value",
-                                                            upperbound=up,
-                                                            lowerbound=low)
-                            # If user selects cancel runs confirmation check
-                            if stat_value is None:
-                                # Variable to be the confirmation message
-                                c_message = ("Are you sure you want to"
-                                             "cancel adding a card?")
-                                # Variable for title to fit inside code
-                                confirm_title = "Confirm cancellation"
-
-                                # This asks user to confirm if they cancel
-                                confirm_stat = easygui.buttonbox(c_message,
-                                                                 confirm_title,
-                                                                 ["Ye"
-                                                                  "s", "No"])
-                                if confirm_stat == "No":
-                                    continue
-                                else:
-                                    # Sets marker to indicate user cancelled
-                                    cancel_marker = True
-                                    break
-
-                            # If input within correct range adds value to stat
-                            if 1 <= stat_value <= 25:
-                                temporary_dict[new_name][stat] = stat_value
-                                break
-                            # If cancel not selected and input not valid prints
-                            # error
+                # Adds new card name to temporary dictionary
+                temporary_dict[new_name] = {}
+                # Iterates through each stat from the list to get new values
+                for stat in values:
+                    while True:
+                        stat_value = easygui.integerbox(f"Enter {new_name}'s "
+                                                        f"{stat} value",
+                                                        f"{stat} value",
+                                                        upperbound=10000000,
+                                                        lowerbound=-10000000)
+                        # If user selects cancel runs confirmation check
+                        if stat_value is None:
+                            # This asks to confirm cancelling the card
+                            confirm_stat = easygui.buttonbox("Are you sure"
+                                                             " you want to "
+                                                             "cancel adding a "
+                                                             "card",
+                                                             "Confirm "
+                                                             "cancellation",
+                                                             ["Yes", "No"])
+                            if confirm_stat == "No":
+                                continue
                             else:
-                                easygui.msgbox("Please enter a value "
-                                               "between 1 and 25",
-                                               "Error")
-                        # Breaks loop if user cancels (same for all break's
-                        # below)
-                        if cancel_marker:
+                                cancel_marker = True
+                                break
+
+                        # If input within correct range adds value to stat(key)
+                        if 1 <= stat_value <= 25:
+                            temporary_dict[new_name][stat] = stat_value
                             break
+                        # If cancel not selected and input not valid prints
+                        # error
+                        else:
+                            easygui.msgbox("Please enter a value between 1"
+                                           " and 25", "Error")
+        # Breaks loop if user cancels (same for all break's below)
                     if cancel_marker:
                         break
-
+                if cancel_marker:
                     break
+
+                break
         else:
             # This asks to confirm cancelling the card
             confirm_name = easygui.buttonbox("Are you sure you want to "
@@ -274,14 +209,13 @@ def add_card(catalogue, values):
                                              "Confirm cancellation",
                                              ["Yes", "No"])
             if confirm_name == "No":
-                # Reruns loop if they say no when asked to confirm cancellation
                 continue
             else:
                 break
 
     # Runs value checker to ensure all stats have values and weren't cancelled
     checked_dictionary = dict_none_checker(temporary_dict, number_stats)
-    # If None is not returned, it sets added_used to 1 to mark it's been used
+    # If none is not returned it sets added_used to 1 to mark it's been used
     if checked_dictionary is not None:
         # Sets it to 1 rather than false so edit function can identify which
         # component was used
@@ -291,10 +225,9 @@ def add_card(catalogue, values):
 
 # Function to format dictionaries into a list style design
 def card_formatter_list(cards):
-    # If dictionary is None from other components it will return None
+    # If dictionary is none from other components returns none or else formats
     if cards is None:
         return None
-
     else:
         # Temporary list to store each formatted dictionary item
         temporary_list = []
@@ -314,14 +247,14 @@ def card_formatter_list(cards):
 
 # Function to format dictionaries into a table style design
 def card_formatter_table(cards, header):
-    # Returns None if dictionary is None from other components or runs program
+    # Returns none if dictionary is none from other components or runs program
     if cards is None:
         return None
     else:
         # Table outline
         outline = "+------------------------+-----------------+"
         outline_length = len(outline)
-        # Uses any name that the user enters as the title and calculates length
+        # Uses any name that the user enters as the title
         title = header
         title_length = len(title)
         # Calculates the number of decorations needed based on length values
@@ -333,10 +266,8 @@ def card_formatter_table(cards, header):
         formatted_output += f"{outline}\n"
         formatted_output += "|          Card          |    Stat Value   |\n"
         formatted_output += f"{outline}\n"
-
         # Iterates through each card in dictionary
         for card, items in cards.items():
-            # Calculates length of card names
             length_card = len(card)
             total_space = 24
             # Calculates the number of spaces needed on each side of name
@@ -346,15 +277,14 @@ def card_formatter_table(cards, header):
             # Calculates if extra spaces are needed if card name was odd number
             remaining = (total_space - length_card) % 2
             # Adds name, spacing, decor, header to the string
-            formatted_output += (f"|{new_spaces}** {card} **{new_spaces + ' ' *
+            formatted_output += (f"|{new_spaces}** {card} **{new_spaces + ' ' * 
                                  remaining}|   ** Stats **   |\n")
-
             # Iterates through each stat in that card
             for item, stat in items.items():
                 # A constant to act as base for number of spaces needed
                 total_after_space = 16
                 after_space = total_after_space - len(item)
-                # Converts integers to strings so length can be calculated
+                # Converts integer to a string so length can be calculated
                 stat_string = f"{stat}"
                 length_stat = len(stat_string)
                 # If stat length is 2, 7 spaces are needed after or if 1 only 8
@@ -362,7 +292,6 @@ def card_formatter_table(cards, header):
                     stat_after_space = 7
                 else:
                     stat_after_space = 8
-                # Adds the stats, values and spacing to the string
                 formatted_output += (f"|     -  {item}{' ' * after_space}|"
                                      f"{' ' * 8}{stat}{' ' * stat_after_space}"
                                      f"|\n")
@@ -372,25 +301,22 @@ def card_formatter_table(cards, header):
         return formatted_output
 
 
-# Function that searches the catalogue for a card, then returns the result
+# Function to search catalogue for a card
 def search_card(catalogue, title):
-    # Loops until a card has been found in catalogue
+    # Loops until a card has been found
     while True:
         # This keeps track if this function is used (Affects edit component)
         search_used = 0
-        # Sets an empty list to store each card name to let user choose one
+        # Sets an empty list and appends each card name
         card_list = []
         for card in catalogue:
             card_list.append(card)
-
-        # Uses the list of card names as choices so the user can select one
+        # Uses list of card names as choices so the user can select one
         search = easygui.choicebox("Please choose a card",
                                    title, card_list)
-        # Returns None if user cancels
         if search is None:
             return None, search_used
-
-        # Runs when user selects card
+        # Checks if card searched is in catalogue
         if search:
             found_card = catalogue[search]
             # Assigns the card name as key to the stat values the card has
@@ -398,20 +324,17 @@ def search_card(catalogue, title):
             # Sets it to 2 rather than false so edit function can identify
             # which component was used
             search_used = 2
-
-            # Returns the cards details in a dictionary and the search marker
             return all_card_details, search_used
 
 
-# This function runs the editing menu to let user choose what they want to do
-def editing_menu(card_dict, formatted_card_dict, choice_marker, stat_list):
-    # False marker for update function
-    empty_marker = False
+# This function runs the editing menu to let the user edit cards
+def editing_menu(card_dict, formatted_card_dict, choice_marker, stat_list,
+                 catalogue):
 
     # This checks which component has been used based on the marker or if None
     if choice_marker == 0 or card_dict is None:
         # If None is returned, 0 will have been as well so this returns None
-        return None, None, empty_marker
+        return None
 
     elif choice_marker == 1:
         # If marker is 1, the add function has been run so the statements are
@@ -428,9 +351,6 @@ def editing_menu(card_dict, formatted_card_dict, choice_marker, stat_list):
 
     # Loops until user cancels or confirms the card
     while True:
-        # A marker set to False to be returned if user cancels editing
-        option_marker = False
-
         # Asks user if they want to edit, confirm or cancel
         edit_options = easygui.buttonbox(f"Would you like to edit, cancel"
                                          f" or confirm this card?\n"
@@ -440,18 +360,37 @@ def editing_menu(card_dict, formatted_card_dict, choice_marker, stat_list):
         if edit_options == "Cancel":
             easygui.msgbox(f"Card has not been {edited_statements}",
                            f"Card not {edited_statements}")
-            # Returns False option marker so catalogue not updated
-            return card_dict, original_card_name, option_marker
+            # Returns None to show that the user cancelled
+            return None
 
-        # Returns the edited card dictionary and True marker if they confirm
+        # Returns the updated catalogue
         elif edit_options == "Confirm":
-            option_marker = True
             easygui.msgbox(f"Card has been {edited_statements}",
                            f"{edited_statements.title()} card")
-            return card_dict, original_card_name, option_marker
+
+            # Checks if the original name is in the catalogue
+            if original_card_name in catalogue:
+                # Checks if the edited card's name was changed
+                if original_card_name in card_dict:
+                    # Updates the stats of the card if name wasn't changed
+                    catalogue[original_card_name].update(
+                        card_dict[original_card_name])
+                else:
+                    # If the cards name was edited this deletes the original
+                    # cards information from the catalogue
+                    del catalogue[original_card_name]
+                    # Adds new card and details to catalogue
+                    catalogue.update(card_dict)
+            else:
+                # Adds new card to catalogue
+                catalogue.update(card_dict)
+
+            # Returns the edited catalogue
+            return catalogue
 
         # If edit they run the function to actually edit the card
         else:
+
             # Gets the edited card details and new formatted details
             card_dict, new_formatted_card = edit_card_details(card_dict,
                                                               stat_list)
@@ -572,101 +511,61 @@ def edit_card_details(card_information, stats_list):
             return card_information, card_formatter_list(card_information)
 
 
-# Function that updates the catalogue with the edited card dictionary
-def update_catalogue(original_name, edited_card, changes_confirmed):
-    # Creates a copy of the catalogue
-    catalogue = get_card_catalogue()
-
-    # If marker is True user has confirmed the changes
-    if changes_confirmed:
-        # Checks if the original name is in the catalogue
-        if original_name in catalogue:
-            # Checks if the edited card's name was changed
-            if original_name in edited_card:
-                # Updates the stats of the card if name wasn't changed
-                catalogue[original_name].update(edited_card[original_name])
-            else:
-                # If the cards name was edited this deletes the original cards
-                # information from the catalogue
-                del catalogue[original_name]
-                # Iterates through each item in edited card
-                for name, values in edited_card.items():
-                    # If the card name has been edited, it assigns the new name
-                    # as the key with the cards stats and adds to the catalogue
-                    if name != original_name:
-                        catalogue[name] = values
-
-    # Returns the catalogue if changed or not
-    return catalogue
-
-
-# Function to delete a chosen card from the catalogue
+# Function to delete chosen card from the catalogue
 def delete_card(searched_card, catalogue):
-    # If the user didn't cancel searching, runs the deletion code
+    # If the user didn't cancel searching, run the deletion code
     if searched_card is not None:
         # This finds the card name for use
         card_name = list(searched_card.keys())[0]
-
         # Formats the cards details for use in messages
         presented_details = card_formatter_list(searched_card)
-
         # Asks user if they want to delete card or not
-        choice = easygui.buttonbox(f"Is this the card you want to delete?"
-                                   f"\n\n{presented_details}",
-                                   "Delete card?",
+        choice = easygui.buttonbox(f"Is this the card you want to delete?\n\n"
+                                   f"{presented_details}", "Delete card?",
                                    ["Yes", "No"])
         # If they select yes ask for further confirmation
         if choice == "Yes":
             confirm = easygui.buttonbox(f"Confirm you want to delete "
                                         f"'{card_name}'",
                                         "Confirmation",
-                                        ["Delete card", "Cancel "
-                                                        "deletion"])
-            # If they choose delete, the card and details are removed
+                                        ["Delete card", "Cancel deletion"])
+            # If they choose delete the card and details are removed
             if confirm == "Delete card":
                 catalogue.pop(card_name)
-            # If they don't confirm, deletion is cancelled
+            # If not deletion is cancelled
             else:
-                easygui.msgbox(f"{card_name} was not deleted\n\nReturning"
-                               f" to options screen",
-                               "Deletion cancelled")
-        # If they don't confirm, deletion is cancelled
+                easygui.msgbox(f"{card_name} was not deleted\n\nReturning "
+                               f"to options screen", "Deletion cancelled")
+        # If not deletion is cancelled
         else:
             easygui.msgbox(f"{card_name} was not deleted\n\nReturning "
                            f"to options screen", "Deletion cancelled")
-
     # Returns the catalogue, changed or not
     return catalogue
 
 
-# Function to display the cards that will be printed to the console
+# Function to display cards that will be printed then print them to the console
 def print_catalogue(full_catalogue):
     # List to keep track of all card names
     card_list = []
-
     # Adds all card names and '-' to the list
     for card_name in full_catalogue:
         card_list.append(f"     -   {card_name}")
     all_names = "\n".join(card_list)
-
     # Displays message of cards that will be printed
     easygui.msgbox(f"These are the cards in the catalogue:\n\n{all_names}"
                    f"\n\nAll cards have been printed to the console",
                    "Catalogue printed")
-
     # Calls the formatter to get all the formatted catalogue
     printed_catalogue = card_formatter_table(full_catalogue,
                                              "Card Catalogue")
-
     # Returns the formatted catalogue
     return printed_catalogue
 
 
 # Main routine
-stats = ["Strength", "Speed", "Stealth", "Cunning"]
-
-# Gets the catalogue to be used by the main function
 card_catalogue = get_card_catalogue()
 
-# Runs all the functions that make up the program
+stats = ["Strength", "Speed", "Stealth", "Cunning"]
+
 main(card_catalogue, stats)
